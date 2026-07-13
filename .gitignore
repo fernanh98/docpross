@@ -2,3 +2,6 @@ __pycache__
 pycache.py
 
 .DS_Store
+
+# Documents examples
+resources/docs
