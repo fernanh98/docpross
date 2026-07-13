@@ -1,0 +1,53 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Docling API",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "modules.docling.api.app_service:app",
+                "--port",
+                "8000"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Frontend Streamlit",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "streamlit",
+            "args": [
+                "run",
+                "app.py"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Services API (LLMs)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "modules.model_services.api:app",
+                "--port",
+                "8001"
+            ],
+            "jinja": true,
+            "justMyCode": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug Full App",
+            "configurations": [
+                "Docling API",
+                "Frontend Streamlit",
+                "Services API (LLMs)"
+            ]
+        }
+    ]
+}
