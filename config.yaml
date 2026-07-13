@@ -1,0 +1,7 @@
+llm:
+  model:
+  base_url:
+  api_key:
+
+doc_processing:
+  base_url:
