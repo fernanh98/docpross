@@ -5,15 +5,19 @@ from langextract.core import data
 
 from src.entities_extractor.extraction_prompts import extraction_system_prompt
 from src.entities_extractor.datamodel import Entity, ExtractionValue
-from src.llm.implementations import BaseLLM
+from src.llm.implementations import LLM
 from src.entities_extractor.tools import extraction_tool
 from src.llm.messages import MessageStructured
+
+from langextract.factory import ModelConfig
 
 
 def extract_with_langextract(
     entity_name: str,
     entity_description: str,
-    text: str
+    text: str,
+    examples: list,
+    llm_model: LLM
 ) -> Entity:
     """
     Extracts an entity from text using the langextract library.
@@ -35,7 +39,15 @@ def extract_with_langextract(
         text_or_documents=text,
         prompt_description=prompt,
         examples=examples,
-        model_id="gemini-3.5-flash",
+        config=ModelConfig(
+            model_id=llm_model.model,
+            provider="openai",
+            provider_kwargs={
+                "api_key": llm_model.api_key, 
+                "base_url": llm_model.base_url
+            },
+        ),
+        debug=True
     )
     return format_langextract_results(entity_name, result)
 
@@ -43,7 +55,7 @@ def extract_with_simple_llm(
     entity_name: str,
     entity_description: str,
     text: str,
-    llm_model: BaseLLM
+    llm_model: LLM
 ) -> Entity:
     """
     Extracts an entity from text using a structured LLM call with tools.
