@@ -1,7 +1,13 @@
 llm:
-  model:
+  model: gemma4:e2b-mlx
   base_url:
-  api_key:
+  api_key: ollama
+
+entities-extractor:
+  llm:
+    model: google/gemini-3.6-flash
+    base_url:
+    api_key: 
 
 doc_processing:
   base_url:
