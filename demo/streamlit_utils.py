@@ -3,16 +3,29 @@ import tempfile
 import os
 import io
 from requests import Session
+import pandas as pd
 
 from docling.datamodel.base_models import DocumentStream
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import streamlit as st
 
-def set_st_state(params: dict[str, Any]) -> None:
+from src.entities_extractor.extractor import EntitiesExtractorGraph
+from src.llm.implementations import LLM
+
+def set_st_state(_params: dict[str, Any]) -> None:
     "Initializes streamlit state params"
-    for param in params.keys():
+    for param in _params.keys():
         if param not in st.session_state:
-            st.session_state[param] = params[param]
+            st.session_state[param] = _params[param]
+
+@st.cache_resource(show_spinner="Setting extractor")
+def set_extractor(_config: dict) -> EntitiesExtractorGraph:
+    llm_model = LLM(
+        model=_config["llm"]["model"],
+        base_url=_config["llm"]["base_url"],
+        api_key=_config["llm"]["api_key"]
+    )
+    return EntitiesExtractorGraph(llm_model)
 
 def create_temp_file(file: UploadedFile) -> str:
     "Creates a temporary file and returns its location"
@@ -44,3 +57,16 @@ def process_document(
         url=_base_url,
         files=files
     )
+
+def convert_to_excel(
+        result_dict: dict # TODO: change to be a pydantic object instead of a dict
+    ) -> pd.DataFrame:
+    rows = []
+    for key, content in result_dict.items():
+        for val_dict in content['values']:
+            rows.append({
+                'entity': key,
+                'description': result_dict[key]['description'],
+                'value': val_dict['value']
+            })
+    return pd.DataFrame(rows)
