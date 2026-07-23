@@ -31,7 +31,9 @@ def process_document(
     else:
         engine_options = ApiVlmEngineOptions(
             engine_type = VlmEngineType.API,
-            url = external_vlm_url
+            url = external_vlm_url,
+            timeout = 180.0,
+            concurrency = 2
         )
         vlm_options = VlmConvertOptions.from_preset(
             vlm_preset,

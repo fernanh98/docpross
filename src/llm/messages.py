@@ -7,7 +7,7 @@ class ToolCall(BaseModel):
 
 class Message(BaseModel):
     role: str
-    content: str
+    content: str | None
 
 class MessageStructured(Message):
     st_response: BaseModel | None
